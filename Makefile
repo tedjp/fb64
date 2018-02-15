@@ -16,7 +16,7 @@ check: example test
 	./test
 
 bench: benchmark.cpp fb64d.o
-	g++ -Wall -O3 -o bench $^ -lbenchmark ../proxygen/proxygen/lib/.libs/libproxygenlib.a  -lssl -lcrypto -lglog
+	g++ -std=gnu++17 -Wall -O3 -o bench $^ -lbenchmark ../proxygen/proxygen/lib/.libs/libproxygenlib.a  -lssl -lcrypto -lglog
 
 runbench: bench
 	./bench
