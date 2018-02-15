@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
 
     // Write decoded data to stdout.
     // Output is binary, so for many inputs it will appear
-    // to be garbage. Consider piping output to `hexdump`.
+    // to be garbage. Consider piping output to `hd` (hexdump).
     if (write(STDOUT_FILENO, output, output_length) < 0) {
         perror("write failed");
         return 3;
