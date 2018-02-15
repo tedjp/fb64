@@ -103,7 +103,7 @@ size_t fb64d_nopad_buflen(size_t inlen) {
 
 // determine length for Base64 input with padding
 // NOTE: This func is pure
-size_t fb64d_buflen(const uint8_t* input, size_t inlen) {
+size_t fb64d_buflen(const char* input, size_t inlen) {
     if (inlen < 4)
         return inlen;
 
@@ -119,7 +119,7 @@ size_t fb64d_buflen(const uint8_t* input, size_t inlen) {
     return fb64d_nopad_buflen(inlen - pad);
 }
 
-static int decode_block(const uint8_t in[4], uint8_t out[3]) {
+static int decode_block(const unsigned char in[4], uint8_t out[3]) {
     out[0] =  t0[in[0]]         | (t1[in[1]] & 3);
     out[1] = (t1[in[1]] & 0xf0) | (t2[in[2]] & 0x0f);
     out[2] = (t2[in[2]] & 192)  | (t3[in[3]] & ~192);
@@ -134,11 +134,11 @@ static int decode_block(const uint8_t in[4], uint8_t out[3]) {
 // output buffer *must* have enough space.
 // Use b64d_buflen() or b64d_nopad_buflen() to determine
 // the output buffer size based on the input length.
-int fb64d_decode(const uint8_t *in, size_t len, uint8_t *out) {
+int fb64d_decode(const char *in, size_t len, uint8_t *out) {
     int bad = 0;
 
     while (len > 3) {
-        bad |= decode_block(in, out);
+        bad |= decode_block((const unsigned char*)in, out);
         // XXX: Avoid using len here and just use `in`?
         len -= 4;
         in += 4;
@@ -146,7 +146,7 @@ int fb64d_decode(const uint8_t *in, size_t len, uint8_t *out) {
     }
 
     if (len > 0) {
-        uint8_t block[4] = {'='};
+        unsigned char block[4] = {'='};
         memcpy(block, in, len);
 
         bad |= decode_block(block, out);
