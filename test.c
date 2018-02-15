@@ -17,6 +17,11 @@ struct {
     { "Zm9vYmE=", "fooba" },
     { "Zm9vYmFy", "foobar" },
     //{ "#!/bin/bash", "" }, // decode error
+    { "AAAA", "\x00\x00\x00" },
+    { "////", "\xff\xff\xff" },
+    { "++++", "\xfb\xef\xbe" },
+    { "----", "\xfb\xef\xbe" },
+    { "____", "\xff\xff\xff" },
 };
 
 int main(void) {

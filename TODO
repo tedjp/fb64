@@ -1,3 +1,2 @@
 - Fix integer overflow for buffer lengths of >⅓SIZE_MAX
 - Add tests for invalid input
-- Add tests for base64url & token68 alternate symbols

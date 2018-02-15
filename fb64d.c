@@ -73,22 +73,19 @@ void setup_tables() {
     }
 
     // token68 alternate characters
+    // ~ & . are documented as (rare) alternatives and part of the
+    // ABNF for HTTP/2's HTTP2-Settings header, but they're actually
+    // not allowed according to RFC 4648 (base64url spec) and there's
+    // no clear documentation of which code represents which value.
+    // So we only include base64 (above) & base64url codes.
     t0['-'] = 62 << 2;
-    t0['.'] = 62 << 2;
     t0['_'] = 63 << 2;
-    t0['~'] = 63 << 2;
     t1['-'] = splitshift_t1(62);
-    t1['.'] = splitshift_t1(62);
-    t1['_'] = splitshift_t2(63);
-    t1['~'] = splitshift_t2(63);
-    t2['-'] = splitshift_t1(62);
-    t2['.'] = splitshift_t1(62);
+    t1['_'] = splitshift_t1(63);
+    t2['-'] = splitshift_t2(62);
     t2['_'] = splitshift_t2(63);
-    t2['~'] = splitshift_t2(63);
     t3['-'] = 62;
-    t3['.'] = 62;
     t3['_'] = 63;
-    t3['~'] = 63;
 
     // Clear badbit for padding ('=')
     t0['='] = 0;
