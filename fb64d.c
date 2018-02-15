@@ -132,7 +132,7 @@ static int decode_block(const unsigned char in[4], uint8_t out[3]) {
 
 // Returns nonzero on invalid input.
 // output buffer *must* have enough space.
-// Use b64d_buflen() or b64d_nopad_buflen() to determine
+// Use fb64d_buflen() or fb64d_nopad_buflen() to determine
 // the output buffer size based on the input length.
 int fb64d_decode(const char *in, size_t len, uint8_t *out) {
     int bad = 0;
