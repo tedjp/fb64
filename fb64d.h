@@ -26,6 +26,7 @@ size_t fb64d_nopad_buflen(size_t inlen);
 // output buffer *must* have enough space. Use fb64d_buflen() to determine
 // how much output buffer to reserve beforehand.
 // Input must not contain newlines. Newlines are considered an error.
+// Output must not overlap with input (ie. cannot decode in-place).
 int fb64d_decode(const char *in, size_t len, uint8_t *out);
 
 #endif
