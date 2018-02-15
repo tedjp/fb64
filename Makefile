@@ -2,8 +2,8 @@
 
 all: fb64d.o
 
-fb64d.o: fb64d.c
-	gcc -Wall -shared -O3 -c $^
+fb64d.o: fb64d.c fb64d.h
+	gcc -Wall -shared -O3 -c $<
 
 test: test.c fb64d.o
 	gcc -Wall -O3 -o $@ $^
