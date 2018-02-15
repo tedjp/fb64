@@ -1,4 +1,4 @@
-.PHONY: all check clean
+.PHONY: all check clean runbench
 
 all: fb64d.o
 
@@ -14,6 +14,12 @@ example: example.c fb64d.o
 check: example test
 	./example > /dev/null
 	./test
+
+bench: benchmark.cpp fb64d.o
+	g++ -Wall -O3 -o $@ $^ -lbenchmark
+
+runbench: bench
+	./bench
 
 clean:
 	rm -f fb64d.o test example
