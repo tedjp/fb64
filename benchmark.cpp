@@ -1,4 +1,5 @@
 #include <benchmark/benchmark.h>
+#include <proxygen/lib/utils/Base64.h>
 
 #include "fb64d.h"
 
@@ -15,5 +16,15 @@ static void BM_Decode(benchmark::State& state) {
 }
 
 BENCHMARK(BM_Decode);
+
+static void BM_ProxygenOpenSSLDecode(benchmark::State& state) {
+    std::string in(input, input_len), out;
+    out.reserve(in.size());
+
+    for (auto _: state) {
+        out = proxygen::Base64::urlDecode(in);
+    }
+}
+BENCHMARK(BM_ProxygenOpenSSLDecode);
 
 BENCHMARK_MAIN()
