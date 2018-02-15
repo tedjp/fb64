@@ -19,3 +19,7 @@ printf("%s\n", output);
 ```
 
 See [example.c](example.c) for a fuller example that handles inputs of various lengths.
+
+## License
+
+[MIT License](LICENSE)
