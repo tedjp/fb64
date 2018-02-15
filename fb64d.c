@@ -59,7 +59,7 @@ static uint8_t splitshift_t2(uint8_t n) {
     return n >> 2 | n << 6;
 }
 
-void setup_tables() {
+void fb64d_init() {
     fill_badbits();
 
     uint8_t n = 0;
@@ -96,14 +96,14 @@ void setup_tables() {
 
 // determine length for input without padding
 // NOTE: This func is const
-size_t b64d_nopad_buflen(size_t inlen) {
+size_t fb64d_nopad_buflen(size_t inlen) {
     // FIXME: Handle integer overflow
     return inlen * 3 / 4;
 }
 
 // determine length for Base64 input with padding
 // NOTE: This func is pure
-size_t b64d_buflen(const uint8_t* input, size_t inlen) {
+size_t fb64d_buflen(const uint8_t* input, size_t inlen) {
     if (inlen < 4)
         return inlen;
 
@@ -116,7 +116,7 @@ size_t b64d_buflen(const uint8_t* input, size_t inlen) {
         }
     }
 
-    return b64d_nopad_buflen(inlen - pad);
+    return fb64d_nopad_buflen(inlen - pad);
 }
 
 static int decode_block(const uint8_t in[4], uint8_t out[3]) {
@@ -134,7 +134,7 @@ static int decode_block(const uint8_t in[4], uint8_t out[3]) {
 // output buffer *must* have enough space.
 // Use b64d_buflen() or b64d_nopad_buflen() to determine
 // the output buffer size based on the input length.
-int decode(const uint8_t *in, size_t len, uint8_t *out) {
+int fb64d_decode(const uint8_t *in, size_t len, uint8_t *out) {
     int bad = 0;
 
     while (len > 3) {

@@ -25,15 +25,15 @@ struct {
 };
 
 int main(void) {
-    setup_tables();
+    fb64d_init();
 
     char buf[123];
 
     bool ok = true;
 
     for (size_t i = 0; i < sizeof(tests) / sizeof(tests[0]); ++i) {
-        size_t outlen = b64d_buflen((const uint8_t*)tests[i].encoded, strlen(tests[i].encoded));
-        int err = decode((const uint8_t*)tests[i].encoded, strlen(tests[i].encoded), (uint8_t*)buf);
+        size_t outlen = fb64d_buflen((const uint8_t*)tests[i].encoded, strlen(tests[i].encoded));
+        int err = fb64d_decode((const uint8_t*)tests[i].encoded, strlen(tests[i].encoded), (uint8_t*)buf);
         if (err) {
             ok = false;
             fprintf(stderr, "Test input %s failed to decode correctly\n", tests[i].encoded);
