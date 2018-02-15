@@ -9,6 +9,10 @@
 // to build the lookup tables.
 // In the future they will be hard-coded.
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // Initialize lookup tables
 // Call once at process startup, otherwise your decodes will be all-zeroes.
 void fb64d_init();
@@ -28,5 +32,9 @@ size_t fb64d_nopad_buflen(size_t inlen);
 // Input must not contain newlines. Newlines are considered an error.
 // Output must not overlap with input (ie. cannot decode in-place).
 int fb64d_decode(const char *in, size_t len, uint8_t *out);
+
+#ifdef __cplusplus
+} // extern "C"
+#endif
 
 #endif
