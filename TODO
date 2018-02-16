@@ -3,3 +3,4 @@
 - Rename buflen functions to decoded_len/decoded_size
 - Add encoder
 - More benchmarks (eg. coreutils)
+- Benchmark "real" encoded data (eg. lots of zero bits).

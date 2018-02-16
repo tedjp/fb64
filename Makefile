@@ -1,9 +1,11 @@
 .PHONY: all check clean
 
-all: fb64d.o
+COMPILE_OBJ = gcc -Wall -shared -O3 -c
 
-fb64d.o: fb64d.c fb64d.h
-	gcc -Wall -shared -O3 -c $<
+all: fb64d.o fb64e.o
+
+%.o: %.c %.h
+	$(COMPILE_OBJ) $<
 
 test: test.c fb64d.o
 	gcc -Wall -O3 -o $@ $^
