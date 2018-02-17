@@ -40,7 +40,7 @@ BM_Decode_String               1288 ns       1287 ns     528328
 BM_ProxygenOpenSSLDecode       2917 ns       2914 ns     237881
 ```
 
-These results show that **fb64d is a bit more than twice as fast**.
+These results show that **fb64d is more than twice as fast**.
 
 ## Limitations
 
@@ -50,6 +50,14 @@ These results show that **fb64d is a bit more than twice as fast**.
 2. The function `fb64d_init()` must be called once to initialize the lookup
    tables. It only has to be executed once at program startup. In future a
    prebuilt table could be used instead.
+
+3. Both base64 and base64url symbols are accepted equally. ie. input may contain
+   a mix of +, /, - and _ as the 62nd & 63rd symbols which will not trigger a
+   decode error. If you need a strict decoder that will only accept one set of
+   symbols you might like to modify the lookup tables to delete the symbols
+   that you don't want, or make a second pass over the input to validate that
+   it conforms to your requirements. See [RFC 4648 section 12 "Security
+   Considerations"](https://tools.ietf.org/html/rfc4648#section-12).
 
 ## Bugs
 

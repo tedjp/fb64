@@ -86,12 +86,24 @@ void fb64d_init() {
     t2['_'] = splitshift_t2(63);
     t3['-'] = 62;
     t3['_'] = 63;
+}
 
-    // Clear badbit for padding ('=')
-    t0['='] = 0;
-    t1['='] = 0;
-    t2['='] = 0;
-    t3['='] = 0;
+// The number of bytes expected in the last block, based on the *unpadded*
+// input length. encoded_len may already be modulo 4.
+// returns 0 for inputs of invalid length (ie. length % 4 == 1).
+__attribute__((const))
+static size_t last_block_decoded_len(size_t encoded_len) {
+    switch (encoded_len % 4) {
+    case 0:
+        return 3;
+    case 3:
+        return 2;
+    case 2:
+        return 1;
+    case 1: // invalid
+    default: // for compilers ;)
+        return 0;
+    }
 }
 
 // determine length for input without padding
@@ -101,15 +113,12 @@ size_t fb64d_nopad_buflen(size_t inlen) {
     return inlen * 3 / 4;
 }
 
-// determine length for Base64 input with padding
+// determine length for input with padding
 // NOTE: This func is pure
 size_t fb64d_buflen(const char* input, size_t inlen) {
-    if (inlen < 4)
-        return inlen;
-
     unsigned pad = 0;
-    if (input[inlen - 1] == '=') {
-        if (input[inlen - 2] == '=') {
+    if (inlen >= 1 && input[inlen - 1] == '=') {
+        if (inlen >= 2 && input[inlen - 2] == '=') {
             pad = 2;
         } else {
             pad = 1;
@@ -137,7 +146,13 @@ static int decode_block(const unsigned char in[4], uint8_t out[3]) {
 int fb64d_decode(const char *in, size_t len, uint8_t *out) {
     int bad = 0;
 
-    while (len > 3) {
+    // if your input is always unpadded you can avoid the copy-decode-copy cycle
+    // after the loop 25% of the time by changing the condition to `len > 3`,
+    // but for possibly-padded input the last block has to do the
+    // copy-decode-copy operation to avoid overrunning the output buffer if
+    // there's padding.
+
+    while (len > 4) {
         bad |= decode_block((const unsigned char*)in, out);
         // XXX: Avoid using len here and just use `in`?
         len -= 4;
@@ -145,12 +160,37 @@ int fb64d_decode(const char *in, size_t len, uint8_t *out) {
         out += 3;
     }
 
-    if (len > 0) {
-        unsigned char block[4] = {'='};
-        memcpy(block, in, len);
+    // Final block (which might be a full block, or might include padding)
+    // When padded we determine the actual output length (by counting
+    // padding symbols) and replace padding with 'A's to avoid decode failure.
+    // Unpadded input is unmodified.
 
-        bad |= decode_block(block, out);
+    unsigned char block_in[4] = {'A', 'A', 'A', 'A'};
+    uint8_t block_out[3];
+
+    memcpy(block_in, in, len);
+
+    // strip padding before final block decode
+    // if your input is never padded then you can delete these operations,
+    // other than the check for truncated input (len == 1)
+    // and go straight to the decode_block call.
+    if (len == 4 && in[3] == '=') {
+        --len;
+        block_in[3] = 'A';
     }
+
+    if (len == 3 && in[2] == '=') {
+        --len;
+        block_in[2] = 'A';
+    }
+
+    if (__builtin_expect(len == 1 || (len == 2 && block_in[1] == '='), 0)) {
+        // short input; won't trigger a badbit
+        return 1;
+    }
+
+    bad |= decode_block(block_in, block_out);
+    memcpy(out, block_out, last_block_decoded_len(len));
 
     return bad;
 }

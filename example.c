@@ -24,8 +24,10 @@ int main(int argc, char *argv[]) {
 
     // Decode.
     int err = fb64d_decode(input, input_length, output);
-    if (err)
+    if (err) {
+        fprintf(stderr, "Decode error\n");
         return 2;
+    }
 
     // Write decoded data to stdout.
     // Output is binary, so for many inputs it will appear

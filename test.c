@@ -22,6 +22,15 @@ struct {
     { "++++", "\xfb\xef\xbe" },
     { "----", "\xfb\xef\xbe" },
     { "____", "\xff\xff\xff" },
+    //{ "A=A=", "" }, // decode error
+    //{ "A", "" }, // decode error
+    // Unpadded inputs
+    { "Zg", "f" },
+    { "Zm8", "fo" },
+    { "Zm9v", "foo" },
+    { "Zm9vYg", "foob" },
+    { "Zm9vYmE", "fooba" },
+    { "Zm9vYmFy", "foobar" },
 };
 
 int main(void) {
@@ -32,6 +41,10 @@ int main(void) {
     bool ok = true;
 
     for (size_t i = 0; i < sizeof(tests) / sizeof(tests[0]); ++i) {
+        // dirty the output buffer so we have a good chance of detecting whether
+        // the output length (buflen) is too long (except if the input was
+        // all-ones).
+        memset(buf, '\xff', sizeof(buf));
         size_t outlen = fb64d_buflen(tests[i].encoded, strlen(tests[i].encoded));
         int err = fb64d_decode(tests[i].encoded, strlen(tests[i].encoded), (uint8_t*)buf);
         if (err) {
