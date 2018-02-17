@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "fb64d.h"
+#include "fb64.h"
 
 struct {
     const char *encoded, *decoded;
@@ -34,7 +34,7 @@ struct {
 };
 
 int main(void) {
-    fb64d_init();
+    fb64_init();
 
     uint8_t buf[123];
 
@@ -45,8 +45,8 @@ int main(void) {
         // the output length (buflen) is too long (except if the input was
         // all-ones).
         memset(buf, '\xff', sizeof(buf));
-        size_t outlen = fb64d_buflen(tests[i].encoded, strlen(tests[i].encoded));
-        int err = fb64d_decode(tests[i].encoded, strlen(tests[i].encoded), (uint8_t*)buf);
+        size_t outlen = fb64_decoded_size(tests[i].encoded, strlen(tests[i].encoded));
+        int err = fb64_decode(tests[i].encoded, strlen(tests[i].encoded), (uint8_t*)buf);
         if (err) {
             ok = false;
             fprintf(stderr, "Test input %s failed to decode correctly\n", tests[i].encoded);

@@ -3,11 +3,11 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "fb64d.h"
+#include "fb64.h"
 
 int main(int argc, char *argv[]) {
-    // Initialize decoder tables
-    fb64d_init();
+    // Initialize tables
+    fb64_init();
 
     // Use command-line arg as input, or premade string.
     const char *input = argc > 1 ? argv[1] : "Zm9vYmFy";
@@ -15,7 +15,7 @@ int main(int argc, char *argv[]) {
     size_t input_length = strlen(input);
 
     // Determine output length to allocate buffer
-    size_t output_length = fb64d_buflen(input, input_length);
+    size_t output_length = fb64_decoded_size(input, input_length);
 
     // Dynamically allocate output buffer
     uint8_t *output = malloc(output_length);
@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
         return 1;
 
     // Decode.
-    int err = fb64d_decode(input, input_length, output);
+    int err = fb64_decode(input, input_length, output);
     if (err) {
         fprintf(stderr, "Decode error\n");
         return 2;

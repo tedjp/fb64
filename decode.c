@@ -1,6 +1,7 @@
 #include <string.h>
 
-#include "fb64d.h"
+#include "fb64.h"
+#include "common.h"
 
 // Future: These tables can be hard-coded
 // rather than built at startup.
@@ -34,22 +35,6 @@ static void fill_badbits() {
 }
 
 __attribute__((const))
-static unsigned char next(unsigned char c) {
-    switch (c) {
-    case 'Z':
-        return 'a';
-    case 'z':
-        return '0';
-    case '9':
-        return '+';
-    case '+':
-        return '/';
-    default:
-        return ++c;
-    }
-}
-
-__attribute__((const))
 static uint8_t splitshift_t1(uint8_t n) {
     return n >> 4 | n << 4;
 }
@@ -59,7 +44,7 @@ static uint8_t splitshift_t2(uint8_t n) {
     return n >> 2 | n << 6;
 }
 
-void fb64d_init() {
+void fb64_init() {
     fill_badbits();
 
     uint8_t n = 0;
@@ -108,14 +93,14 @@ static size_t last_block_decoded_len(size_t encoded_len) {
 
 // determine length for input without padding
 // NOTE: This func is const
-size_t fb64d_nopad_buflen(size_t inlen) {
+size_t fb64_decoded_size_nopad(size_t inlen) {
     // FIXME: Handle integer overflow
     return inlen * 3 / 4;
 }
 
 // determine length for input with padding
 // NOTE: This func is pure
-size_t fb64d_buflen(const char* input, size_t inlen) {
+size_t fb64_decoded_size(const char* input, size_t inlen) {
     unsigned pad = 0;
     if (inlen >= 1 && input[inlen - 1] == '=') {
         if (inlen >= 2 && input[inlen - 2] == '=') {
@@ -125,7 +110,7 @@ size_t fb64d_buflen(const char* input, size_t inlen) {
         }
     }
 
-    return fb64d_nopad_buflen(inlen - pad);
+    return fb64_decoded_size_nopad(inlen - pad);
 }
 
 static int decode_block(const unsigned char in[4], uint8_t out[3]) {
@@ -141,9 +126,9 @@ static int decode_block(const unsigned char in[4], uint8_t out[3]) {
 
 // Returns nonzero on invalid input.
 // output buffer *must* have enough space.
-// Use fb64d_buflen() or fb64d_nopad_buflen() to determine
+// Use fb64_decode_size() or fb64_decode_size_nopad() to determine
 // the output buffer size based on the input length.
-int fb64d_decode(const char *in, size_t len, uint8_t *out) {
+int fb64_decode(const char *in, size_t len, uint8_t *out) {
     int bad = 0;
 
     // if your input is always unpadded you can avoid the copy-decode-copy cycle
