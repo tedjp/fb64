@@ -29,6 +29,38 @@ size_t fb64_decoded_size_nopad(size_t inlen);
 // Output must not overlap with input (ie. cannot decode in-place).
 int fb64_decode(const char *in, size_t len, uint8_t *out);
 
+// Encoding:
+// These functions *do not* output a trailing NUL-byte. Neither the encoding
+// functions nor the fb64_encoded_size*() functions include space for
+// a terminator.
+// This makes them suitable for writing directly to network buffers,
+// but means that it's the caller's responsibility to NUL-terminate if they
+// intend to use the output as a C-string.
+
+// Size of output buffer needed to encode input with possible padding
+__attribute__((__const__))
+size_t fb64_encoded_size(size_t input_len);
+
+// Size of output buffer needed to encode input without padding.
+__attribute__((__const__))
+size_t fb64_encoded_size_nopad(size_t input_len);
+
+// Encode bytes to Base64
+// Using the standard base64 alphabet (/ & +) with padding.
+void fb64_encode(const uint8_t *buf, size_t len, char *out);
+
+// Encode bytes to Base64
+// Using the standard base64 alphabet (/ & +) without padding.
+void fb64_encode_nopad(const uint8_t *buf, size_t len, char *out);
+
+// Encode bytes to Base64
+// Using the base64url alphabet (- & _) with padding.
+void fb64_encode_base64url(const uint8_t *buf, size_t len, char *out);
+
+// Encode bytes to Base64
+// Using the base64url alphabet (- & _) without padding.
+void fb64_encode_base64url_nopad(const uint8_t *buf, size_t len, char *out);
+
 #ifdef __cplusplus
 } // extern "C"
 #endif

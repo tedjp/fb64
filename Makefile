@@ -2,15 +2,17 @@
 
 COMPILE_OBJ = gcc -Wall -shared -O3 -c
 
-all: encode.o decode.o
+OBJS = common.o encode.o decode.o
 
-%.o: %.c %.h common.h
+all: $(OBJS)
+
+%.o: %.c common.h
 	$(COMPILE_OBJ) $<
 
-test: test.c decode.o
+test: test.c $(OBJS)
 	gcc -Wall -O3 -o $@ $^
 
-example: example.c decode.o
+example: example.c $(OBJS)
 	gcc -Wall -o $@ $^
 
 check: example test

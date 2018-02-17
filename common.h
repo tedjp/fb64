@@ -17,4 +17,12 @@ inline unsigned char next(unsigned char c) {
     }
 }
 
+void fb64_init();
+
+__attribute__((__visibility__("internal")))
+void decode_init();
+
+__attribute__((__visibility__("internal")))
+void encode_init();
+
 #endif

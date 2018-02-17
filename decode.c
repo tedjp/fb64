@@ -44,7 +44,7 @@ static uint8_t splitshift_t2(uint8_t n) {
     return n >> 2 | n << 6;
 }
 
-void fb64_init() {
+void decode_init() {
     fill_badbits();
 
     uint8_t n = 0;
