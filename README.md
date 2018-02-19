@@ -23,24 +23,20 @@ See [example.c](example.c) for a fuller example that handles inputs of various l
 
 ## Benchmarks
 
-A preliminary benchmark comparison with OpenSSL's Base64 decoder,
-invoked via [Proxygen](https://github.com/facebook/proxygen), is included on
-the [bench-proxygen branch](https://github.com/tedjp/fb64/commits/bench-proxygen).
-
-The first two use fb64 (String version wraps the input & output
-in `std::string`s). BM\_ProxygenOpenSSLDecode is OpenSSL's BIO base64 decoder wrapped
-in `std::string`s. The benchmark decodes 1 kiB of random data.
+fb64 is **twice as fast as OpenSSL & 7 times as fast as Boost** at decoding
+1 kiB of random data.
 
 ```
 ----------------------------------------------------------------
 Benchmark                         Time           CPU Iterations
 ----------------------------------------------------------------
-BM_Decode                      1277 ns       1275 ns     547301
-BM_Decode_String               1288 ns       1287 ns     528328
-BM_ProxygenOpenSSLDecode       2917 ns       2914 ns     237881
+BM_Decode                      1275 ns       1275 ns     544111
+BM_Decode_String               1304 ns       1304 ns     532441
+BM_ProxygenOpenSSLDecode       2817 ns       2817 ns     247103
+BM_BoostDecode                 8915 ns       8915 ns      76537
 ```
 
-These results show that **fb64 decode is more than twice as fast**.
+The "String" variant wraps the input & output in a `std::string`.
 
 ## Advanced usage
 
