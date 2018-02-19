@@ -1,5 +1,8 @@
 #include <string>
 #include <benchmark/benchmark.h>
+#include <boost/archive/iterators/binary_from_base64.hpp>
+#include <boost/archive/iterators/transform_width.hpp>
+#include <boost/algorithm/string.hpp>
 #include <proxygen/lib/utils/Base64.h>
 
 #include "fb64.h"
@@ -53,5 +56,15 @@ static void BM_ProxygenOpenSSLDecode(benchmark::State& state) {
     }
 }
 BENCHMARK(BM_ProxygenOpenSSLDecode);
+
+static void BM_BoostDecode(benchmark::State& state) {
+    const std::string in(input, input_len);
+    using decodeIt = boost::archive::iterators::transform_width<boost::archive::iterators::binary_from_base64<std::string::const_iterator>, 8, 6>;
+
+    for (auto _: state) {
+        std::string decoded(decodeIt(std::begin(in)), decodeIt(std::end(in)));
+    }
+}
+BENCHMARK(BM_BoostDecode);
 
 BENCHMARK_MAIN()
