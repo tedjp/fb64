@@ -1,4 +1,4 @@
-.PHONY: all check clean
+.PHONY: all check clean runbench
 
 COMPILE_OBJ = gcc -Wall -shared -O3 -c
 
@@ -18,6 +18,12 @@ example: example.c $(OBJS)
 check: example test
 	./example > /dev/null
 	./test
+
+bench: benchmark.cpp $(OBJS)
+	g++ -std=gnu++17 -Wall -O3 -o $@ $^ -lbenchmark ../proxygen/proxygen/lib/.libs/libproxygenlib.a  -lssl -lcrypto -lglog
+
+runbench: bench
+	./bench
 
 clean:
 	rm -f *.o test example
