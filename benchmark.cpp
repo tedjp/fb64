@@ -67,4 +67,18 @@ static void BM_BoostDecode(benchmark::State& state) {
 }
 BENCHMARK(BM_BoostDecode);
 
+// Encode benchmark
+static void fb64_Encode(benchmark::State& state) {
+    std::string bin(fb64_decoded_size(input, input_len), '\xff');
+    if (fb64_decode(input, input_len, reinterpret_cast<uint8_t*>(bin.data())) != 0)
+        throw std::runtime_error("Decode failure");
+
+    std::string encoded = std::string(fb64_encoded_size(bin.size()), '\0');
+
+    for (auto _: state) {
+        fb64_encode(reinterpret_cast<const uint8_t*>(bin.data()), bin.size(), encoded.data());
+    }
+}
+BENCHMARK(fb64_Encode);
+
 BENCHMARK_MAIN()
