@@ -44,7 +44,8 @@ static void BM_Decode_String(benchmark::State& state) {
 BENCHMARK(BM_Decode_String);
 
 static void BM_ProxygenOpenSSLDecode(benchmark::State& state) {
-    std::string in(input, input_len), out;
+    const std::string in(input, input_len);
+    std::string out;
     out.reserve(in.size());
 
     for (auto _: state) {
