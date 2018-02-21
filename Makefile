@@ -20,7 +20,7 @@ check: example test
 	./test
 
 bench: benchmark.cpp $(OBJS)
-	g++ -std=gnu++17 -Wall -O3 -o $@ $^ -lbenchmark ../proxygen/proxygen/lib/.libs/libproxygenlib.a  -lssl -lcrypto -lglog
+	g++ -std=gnu++17 -Wall -O3 -o $@ $^ -I../modp ../modp/modp_b64.o -lbenchmark ../proxygen/proxygen/lib/.libs/libproxygenlib.a  -lssl -lcrypto -lglog
 
 runbench: bench
 	./bench
