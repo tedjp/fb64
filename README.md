@@ -8,24 +8,42 @@ Features
 - Small memory footprint.
 - *Fast.*
 
-## Example
+## Examples
+
+### Decode
 
 ```c
-#include "fb64.h"
-
-fb64_init(); // once
-
 const char input[] = "SGVsbG8sIHdvcmxkIQ==";
 
-// Use fb64_decoded_size() to determine output size; hard-coded here for simplicity.
-uint8_t output[14] = {0};
+fb64_init(); // initialize decode tables (once)
+
+size_t decoded_size = fb64_decoded_size(input, strlen(input));
+uint8_t output[decoded_size];
 
 fb64_decode(input, strlen(input), output);
 
-printf("%s\n", output);
+printf("%.*s\n", (int)decoded_size, output);
 ```
 
-See [example.c](example.c) for a fuller example that handles inputs of various lengths.
+### Encode
+
+```c
+const uint8_t input[] = {'f', 'b', '6', '4', ' ', 'i', 's', ' ', 'f', 'a', 's', 't', '!'};
+
+// Use fb64_encoded_size() to determine output length. It does not
+// include space for a NUL-terminator.
+
+size_t output_size = fb64_encoded_size(sizeof(input));
+
+char output[output_size + 1]; // include space for NUL-terminator
+
+fb64_encode(input, sizeof(input), output);
+
+// Manually terminate the C-string
+output[output_size] = '\0';
+
+printf("%s\n", output);
+```
 
 ## Benchmarks
 
