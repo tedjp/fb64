@@ -26,8 +26,6 @@ static std::string stringdecode(const std::string& in) {
 }
 
 static void BM_Decode(benchmark::State& state) {
-    fb64_init();
-
     uint8_t decoded[sizeof(input)-1]; // bigger than necessary but OK.
     for (auto _: state) {
         fb64_decode(input, input_len, decoded);
@@ -37,8 +35,6 @@ static void BM_Decode(benchmark::State& state) {
 BENCHMARK(BM_Decode);
 
 static void BM_Decode_String(benchmark::State& state) {
-    fb64_init(); // unnecessary re-run
-
     std::string in(input);
     std::string out;
 
@@ -119,10 +115,4 @@ static void modp_Encode(benchmark::State& state) {
 }
 BENCHMARK(modp_Encode);
 
-int main(int argc, char *argv[]) {
-    fb64_init();
-
-    benchmark::Initialize(&argc, argv);
-    benchmark::RunSpecifiedBenchmarks();
-    return 0;
-}
+BENCHMARK_MAIN()

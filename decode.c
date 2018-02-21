@@ -59,7 +59,8 @@ static uint8_t splitshift_t2(uint8_t n) {
     return n >> 2 | n << 6;
 }
 
-void fb64_init() {
+__attribute__((constructor))
+static void setup_tables() {
     fill_badbits();
 
     uint8_t n = 0;

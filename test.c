@@ -54,8 +54,6 @@ const struct {
 };
 
 int main(void) {
-    fb64_init();
-
     uint8_t buf[123];
 
     bool ok = true;

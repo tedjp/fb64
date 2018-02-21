@@ -15,8 +15,6 @@ Features
 ```c
 const char input[] = "SGVsbG8sIHdvcmxkIQ==";
 
-fb64_init(); // initialize decode tables (once)
-
 size_t decoded_size = fb64_decoded_size(input, strlen(input));
 uint8_t output[decoded_size];
 
@@ -29,9 +27,6 @@ printf("%.*s\n", (int)decoded_size, output);
 
 ```c
 const uint8_t input[] = {'f', 'b', '6', '4', ' ', 'i', 's', ' ', 'f', 'a', 's', 't', '!'};
-
-// Use fb64_encoded_size() to determine output length. It does not
-// include space for a NUL-terminator.
 
 size_t output_size = fb64_encoded_size(sizeof(input));
 
@@ -78,9 +73,8 @@ should be split on 4-character boundaries.
 1. `fb64_decode()` does not accept newlines in its input. It might still be faster
    than other decoders if the input is preprocessed to delete newlines.
 
-2. The function `fb64_init()` must be called once to initialize the lookup
-   tables. It only has to be executed once at program startup. In future the
-   lookup tables could be hard-coded.
+2. The decode lookup tables are initialzed dynamically at program startup.
+   In future they could be hard-coded.
 
 3. Both base64 and base64url symbols are accepted equally. ie. input may contain
    a mix of +, /, - and _ as the last two symbols which will not trigger a
@@ -123,7 +117,6 @@ fb64 benefits:
 
 modp\_b64 benefits:
 - Faster, especially at decoding.
-- No need for runtime initialization; lookup tables are static.
 
 ## License
 

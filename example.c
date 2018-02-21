@@ -6,9 +6,6 @@
 #include "fb64.h"
 
 int main(int argc, char *argv[]) {
-    // Initialize tables
-    fb64_init();
-
     // Use command-line arg as input, or premade string.
     const char *input = argc > 1 ? argv[1] : "Zm9vYmFy";
 

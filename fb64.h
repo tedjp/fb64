@@ -21,11 +21,6 @@ extern "C" {
 #define FB64_ENCODE_MAX (SIZE_MAX / 4)
 #define FB64_DECODE_MAX (SIZE_MAX / 3)
 
-// Initialize lookup tables for decode
-// Call once at process startup, otherwise your decodes will be
-// all-zeroes.
-void fb64_init();
-
 // determine length for Base64 input with padding (possible trailing '=')
 __attribute__((__pure__))
 size_t fb64_decoded_size(const char* input, size_t inlen);
