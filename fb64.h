@@ -8,8 +8,21 @@
 extern "C" {
 #endif
 
-// Initialize lookup tables for encode & decode
-// Call once at process startup, otherwise your encodes & decodes will be
+// Largest inputs that the _size() functions will return accurate values for.
+// These are >1 Exabyte on 64-bit systems so you probably have other, smaller
+// limits (eg. available system memory; incoming network buffer size) that
+// will be hit first. Beyond these values, the _size() functions will silently
+// return a wrapped value that will result in a buffer overflow, so don't
+// allocate the output buffer based on an untrusted input buffer length.
+//
+// (If you want to encode/decode larger inputs, split the input on 3-octet
+// boundaries for encode or 4-char boundaries for decode and make multiple calls
+// to the encode/decode function.)
+#define FB64_ENCODE_MAX (SIZE_MAX / 4)
+#define FB64_DECODE_MAX (SIZE_MAX / 3)
+
+// Initialize lookup tables for decode
+// Call once at process startup, otherwise your decodes will be
 // all-zeroes.
 void fb64_init();
 
