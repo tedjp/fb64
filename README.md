@@ -47,24 +47,24 @@ printf("%s\n", output);
 
 ## Benchmarks
 
-fb64 is **twice as fast as OpenSSL & 7 times as fast as Boost** at decoding
-1 kiB of random data.
+Both encode & decode benchmarks are for 1 kiB of random data.
 
-fb64 is **8 times as fast as Boost** at encoding 1 kiB of random data.
+|Decoder                      |    Time      | Iterations |
+|-----------------------------|-------------:|-----------:|
+|modp                         |    572 ns    |  1150750   |
+|fb64                         |   1273 ns    |   538302   |
+|fb64 string                  |   1302 ns    |   524609   |
+|Proxygen/OpenSSL             |   2843 ns    |   243047   |
+|Boost                        |  10024 ns    |    67508   |
 
-```
-----------------------------------------------------------------
-Benchmark                         Time           CPU Iterations
-----------------------------------------------------------------
-BM_Decode                      1275 ns       1275 ns     544111
-BM_Decode_String               1304 ns       1304 ns     532441
-BM_ProxygenOpenSSLDecode       2817 ns       2817 ns     247103
-BM_BoostDecode                 8915 ns       8915 ns      76537
-fb64_Encode                    1029 ns       1029 ns     689610
-BoostEncode                    9054 ns       9054 ns      71812
-```
+|Encoder                      |    Time      | Iterations |
+|-----------------------------|-------------:|-----------:|
+|modp                         |    839 ns    |   802592   |
+|fb64                         |    947 ns    |   716427   |
+|Boost                        |   9026 ns    |    74113   |
 
-The "String" variant wraps the input & output in a `std::string`.
+The "fb64 string" variant wraps the input & output in a `std::string`
+for a more direct comparison with the Proxygen/OpenSSL API.
 
 ## Advanced usage
 
@@ -95,6 +95,34 @@ should be split on 4-character boundaries.
 1. The buffer length functions `fb64_decoded_size()` &
    `fb64_decoded_size_nopad()` return incorrect buffer lengths for inputs longer
    than ⅓ of `SIZE_MAX`. That's about 6 exabytes (6×10¹⁸) on a 64-bit machine.
+   The preprocessor macros `FB64_DECODE_MAX` & `FB64_ENCODE_MAX` can be used to
+   ensure that these limits are not exceeded.
+
+## Comparison with modp\_b64
+
+modp\_b64 is a bit faster. It also uses a bit more memory.
+
+|Library  |Decode memory|Decode speed|Encode memory|Encode speed|Total static footprint|
+|---------|------------:|-----------:|------------:|-----------:|---------------------:|
+|fb64     |        1 kiB|          1×|      128 kiB|          1×|             1.125 kiB|
+|modp\_b64|        4 kiB|       2.15×|      768 kiB|        1.1×|             4.75  kiB|
+
+### Tradeoffs
+
+fb64 benefits:
+- Supports base64 & base64url code sets simultaneously
+  for both encode & decode (modp\_64 only supports regular base64).
+- Padding is optional at runtime
+  (modp\_64 requires padding to be selected at compile time or to be implemented
+  by the caller).
+- Output buffer size is exact
+  (modp\_64 may over-allocate by a few bytes).
+- Smaller memory footprint. All tables fit within one 4 kiB page and take up
+  less L1 cache; useful if you only encode/decode occasionally.
+
+modp\_b64 benefits:
+- Faster, especially at decoding.
+- No need for runtime initialization; lookup tables are static.
 
 ## License
 
