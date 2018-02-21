@@ -26,6 +26,8 @@ See [example.c](example.c) for a fuller example that handles inputs of various l
 fb64 is **twice as fast as OpenSSL & 7 times as fast as Boost** at decoding
 1 kiB of random data.
 
+fb64 is **8 times as fast as Boost** at encoding 1 kiB of random data.
+
 ```
 ----------------------------------------------------------------
 Benchmark                         Time           CPU Iterations
@@ -34,6 +36,8 @@ BM_Decode                      1275 ns       1275 ns     544111
 BM_Decode_String               1304 ns       1304 ns     532441
 BM_ProxygenOpenSSLDecode       2817 ns       2817 ns     247103
 BM_BoostDecode                 8915 ns       8915 ns      76537
+fb64_Encode                    1029 ns       1029 ns     689610
+BoostEncode                    9054 ns       9054 ns      71812
 ```
 
 The "String" variant wraps the input & output in a `std::string`.
