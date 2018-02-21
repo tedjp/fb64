@@ -44,8 +44,11 @@ const struct {
 } encode_tests[] = {
     { "", 0, "", true, false },
     { "\x00", 1, "AA==", true, false },
+    { "\x00", 1, "AA", false, true },
+    { "ab", 2, "YWI", false, true },
     { "foobar", 6, "Zm9vYmFy", true, false },
     { "\xff\xff\xff", 3, "____", true, true },
+    { "\xff\xff\xfe", 3, "___-", true, true },
 };
 
 int main(void) {
