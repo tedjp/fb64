@@ -83,7 +83,7 @@ should be split on 4-character boundaries.
    lookup tables could be hard-coded.
 
 3. Both base64 and base64url symbols are accepted equally. ie. input may contain
-   a mix of +, /, - and _ as the 62nd & 63rd symbols which will not trigger a
+   a mix of +, /, - and _ as the last two symbols which will not trigger a
    decode error. If you need a strict decoder that will only accept one set of
    symbols you might like to modify the lookup tables to delete the symbols
    that you don't want, or make a second pass over the input to validate that
