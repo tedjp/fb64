@@ -1,5 +1,6 @@
 #include <string>
 #include <benchmark/benchmark.h>
+#include <boost/archive/iterators/base64_from_binary.hpp>
 #include <boost/archive/iterators/binary_from_base64.hpp>
 #include <boost/archive/iterators/transform_width.hpp>
 #include <boost/algorithm/string.hpp>
@@ -81,4 +82,24 @@ static void fb64_Encode(benchmark::State& state) {
 }
 BENCHMARK(fb64_Encode);
 
-BENCHMARK_MAIN()
+static void BoostEncode(benchmark::State& state) {
+    std::string bin(fb64_decoded_size(input, input_len), '\xff');
+    if (fb64_decode(input, input_len, reinterpret_cast<uint8_t*>(bin.data())) != 0)
+        throw std::runtime_error("Decode failure");
+
+    std::string encoded = std::string(fb64_encoded_size(bin.size()), '\0');
+    using encodeIt = boost::archive::iterators::base64_from_binary<boost::archive::iterators::transform_width<std::string::const_iterator, 6, 8>>;
+
+    for (auto _: state) {
+        std::string encoded(encodeIt(std::begin(bin)), encodeIt(std::end(bin)));
+    }
+}
+BENCHMARK(BoostEncode);
+
+int main(int argc, char *argv[]) {
+    fb64_init();
+
+    benchmark::Initialize(&argc, argv);
+    benchmark::RunSpecifiedBenchmarks();
+    return 0;
+}
