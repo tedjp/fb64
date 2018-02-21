@@ -59,11 +59,11 @@ __attribute__((__const__))
 size_t fb64_encoded_size_nopad(size_t input_len);
 
 // Encode bytes to Base64
-// Using the standard base64 alphabet (/ & +) with padding.
+// Using the standard base64 alphabet (+ & /) with padding.
 void fb64_encode(const uint8_t *buf, size_t len, char *out);
 
 // Encode bytes to Base64
-// Using the standard base64 alphabet (/ & +) without padding.
+// Using the standard base64 alphabet (+ & /) without padding.
 void fb64_encode_nopad(const uint8_t *buf, size_t len, char *out);
 
 // Encode bytes to Base64
