@@ -51,7 +51,7 @@ Both encode & decode benchmarks are for 1 kiB of random data.
 
 |Decoder                      |    Time      | Iterations |
 |:----------------------------|-------------:|-----------:|
-|modp_b64                     |    572 ns    |  1150750   |
+|modp\_b64                    |    572 ns    |  1150750   |
 |fb64                         |   1273 ns    |   538302   |
 |fb64 string                  |   1302 ns    |   524609   |
 |Proxygen/OpenSSL             |   2843 ns    |   243047   |
@@ -59,7 +59,7 @@ Both encode & decode benchmarks are for 1 kiB of random data.
 
 |Encoder                      |    Time      | Iterations |
 |:----------------------------|-------------:|-----------:|
-|modp_b64                     |    839 ns    |   802592   |
+|modp\_b64                    |    839 ns    |   802592   |
 |fb64                         |    947 ns    |   716427   |
 |Boost                        |   9026 ns    |    74113   |
 
