@@ -112,12 +112,12 @@ is faster. It also uses more memory.
 
 fb64 benefits:
 - Supports base64 & base64url code sets simultaneously
-  for both encode & decode (modp\_64 only supports regular base64).
+  for both encode & decode (modp\_b64 only supports regular base64).
 - Padding is optional at runtime
-  (modp\_64 requires padding to be selected at compile time or to be implemented
+  (modp\_b64 requires padding to be selected at compile time or to be implemented
   by the caller).
 - Output buffer size is exact
-  (modp\_64 may over-allocate by a few bytes).
+  (modp\_b64 may over-allocate by a few bytes).
 - Smaller memory footprint. All tables fit within one 4 kiB page and take up
   less L1 cache; useful if you only encode/decode occasionally.
 
