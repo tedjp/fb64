@@ -2,6 +2,12 @@
 
 Fast Base64 Encoder & Decoder
 
+Features
+- Supports both [base64 & base64url encodings](https://tools.ietf.org/html/rfc4648).
+- Supports both padded & unpadded input & output.
+- Small memory footprint.
+- *Fast.*
+
 ## Example
 
 ```c
