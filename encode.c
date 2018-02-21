@@ -6,7 +6,6 @@
 #include "common.h"
 
 static char b64[64], b64url[64];
-// TODO: try out-of-order tables to save a couple of shifts
 
 void encode_init() {
     char c = 'A';
