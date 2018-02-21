@@ -3,22 +3,26 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "common.h"
+#include "fb64.h"
 
-static char b64[64], b64url[64];
-
-void encode_init() {
-    char c = 'A';
-    for (unsigned i = 0; i < 64; ++i) {
-        b64[i] = c;
-        c = next(c);
-    }
-
-    memcpy(b64url, b64, 64);
-
-    b64url[62] = '-';
-    b64url[63] = '_';
-}
+static const char b64[64] = {
+    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+    'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+    'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+    'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
+    'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
+    'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+    'w', 'x', 'y', 'z', '0', '1', '2', '3',
+    '4', '5', '6', '7', '8', '9', '+', '/'};
+static const char b64url[64] = {
+    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+    'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+    'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+    'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
+    'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
+    'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+    'w', 'x', 'y', 'z', '0', '1', '2', '3',
+    '4', '5', '6', '7', '8', '9', '-', '_'};
 
 static void enc_block(const char table[64], const uint8_t bytes[3], char dest[4]) {
     dest[0] = table[bytes[0] >> 2];

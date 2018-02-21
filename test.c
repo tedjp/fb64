@@ -47,6 +47,8 @@ const struct {
     { "\x00", 1, "AA", false, true },
     { "ab", 2, "YWI", false, true },
     { "foobar", 6, "Zm9vYmFy", true, false },
+    { "\xff\xff\xff", 3, "////", true, false },
+    { "\xff\xff\xfe", 3, "///+", true, false },
     { "\xff\xff\xff", 3, "____", true, true },
     { "\xff\xff\xfe", 3, "___-", true, true },
 };

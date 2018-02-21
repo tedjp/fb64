@@ -1,7 +1,6 @@
 #include <string.h>
 
 #include "fb64.h"
-#include "common.h"
 
 // Future: These tables can be hard-coded
 // rather than built at startup.
@@ -35,6 +34,22 @@ static void fill_badbits() {
 }
 
 __attribute__((const))
+static unsigned char next(unsigned char c) {
+    switch (c) {
+    case 'Z':
+        return 'a';
+    case 'z':
+        return '0';
+    case '9':
+        return '+';
+    case '+':
+        return '/';
+    default:
+        return ++c;
+    }
+}
+
+__attribute__((const))
 static uint8_t splitshift_t1(uint8_t n) {
     return n >> 4 | n << 4;
 }
@@ -44,7 +59,7 @@ static uint8_t splitshift_t2(uint8_t n) {
     return n >> 2 | n << 6;
 }
 
-void decode_init() {
+void fb64_init() {
     fill_badbits();
 
     uint8_t n = 0;
