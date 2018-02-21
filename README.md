@@ -51,7 +51,7 @@ Both encode & decode benchmarks are for 1 kiB of random data.
 
 |Decoder                      |    Time      | Iterations |
 |:----------------------------|-------------:|-----------:|
-|modp                         |    572 ns    |  1150750   |
+|modp_b64                     |    572 ns    |  1150750   |
 |fb64                         |   1273 ns    |   538302   |
 |fb64 string                  |   1302 ns    |   524609   |
 |Proxygen/OpenSSL             |   2843 ns    |   243047   |
@@ -59,7 +59,7 @@ Both encode & decode benchmarks are for 1 kiB of random data.
 
 |Encoder                      |    Time      | Iterations |
 |:----------------------------|-------------:|-----------:|
-|modp                         |    839 ns    |   802592   |
+|modp_b64                     |    839 ns    |   802592   |
 |fb64                         |    947 ns    |   716427   |
 |Boost                        |   9026 ns    |    74113   |
 
@@ -100,7 +100,8 @@ should be split on 4-character boundaries.
 
 ## Comparison with modp\_b64
 
-modp\_b64 is a bit faster. It also uses a bit more memory.
+[modp\_b64](https://github.com/chromium/chromium/tree/master/third_party/modp_b64)
+is faster. It also uses more memory.
 
 |Library  |Decode memory|Decode speed|Encode memory|Encode speed|Total static footprint|
 |---------|------------:|-----------:|------------:|-----------:|---------------------:|
