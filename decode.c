@@ -193,7 +193,9 @@ int fb64_decode(const char *in, size_t len, uint8_t *out) {
 
     if (__builtin_expect(len == 1 || (len == 2 && block_in[1] == '='), 0)) {
         // short input; won't trigger a badbit
-        return 1;
+        // (This is different from all the badbits so it can be
+        // distinguished from bad input characters.)
+        return (1 << 4);
     }
 
     bad |= decode_block(block_in, block_out);
