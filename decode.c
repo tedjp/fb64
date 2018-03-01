@@ -132,7 +132,7 @@ size_t fb64_decoded_size(const char* input, size_t inlen) {
 static int decode_block(const unsigned char in[4], uint8_t out[3]) {
     out[0] =  t0[in[0]]         | (t1[in[1]] & 3);
     out[1] = (t1[in[1]] & 0xf0) | (t2[in[2]] & 0x0f);
-    out[2] = (t2[in[2]] & 192)  | (t3[in[3]] & ~192);
+    out[2] = (t2[in[2]] & 192)  |  t3[in[3]];
 
     return (t0[in[0]] & T0BB) |
            (t1[in[1]] & T1BB) |
