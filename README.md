@@ -47,8 +47,8 @@ Both encode & decode benchmarks are for 1 kiB of random data.
 |Decoder                      |    Time      | Iterations |
 |:----------------------------|-------------:|-----------:|
 |modp\_b64                    |    572 ns    |  1150750   |
-|fb64                         |   1273 ns    |   538302   |
-|fb64 string                  |   1302 ns    |   524609   |
+|fb64                         |   1211 ns    |   575711   |
+|fb64 string                  |   1239 ns    |   559229   |
 |Proxygen/OpenSSL             |   2843 ns    |   243047   |
 |Boost                        |  10024 ns    |    67508   |
 
@@ -99,8 +99,8 @@ is faster. It also uses more memory.
 
 |Library  |Decode memory|Decode speed|Encode memory|Encode speed|Total static footprint|
 |---------|------------:|-----------:|------------:|-----------:|---------------------:|
-|fb64     |        1 kiB|          1×|      128 kiB|          1×|             1.125 kiB|
-|modp\_b64|        4 kiB|       2.15×|      768 kiB|        1.1×|             4.75  kiB|
+|fb64     |      1.5 kiB|          1×|      128 kiB|          1×|             1.125 kiB|
+|modp\_b64|      4   kiB|       2.12×|      768 kiB|        1.1×|             4.75  kiB|
 
 ### Tradeoffs
 
