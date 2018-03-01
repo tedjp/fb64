@@ -5,32 +5,26 @@
 // Future: These tables can be hard-coded
 // rather than built at startup.
 
-// T0: 6 bits, unused bit, badbit
-//     6 bits are MSB of the first octet
-// T1: 4 bits, unused bit, badbit, 2 bits
-//     2 bits in LSB position are combined with T0 for first octet
-//     4 bits in MSB position are the 4 MSB of second octet
-// T2: 2 bits, unused bit, badbit, 4 bits
-//     2 bits are the MSB of the third octet
-//     4 bits are the LSB of the second octet
-// T3: unused bit, badbit, 6 bits
-//     6 bits are the LSB of the third octet
-// IOW T1 & T2 contain bits in the "wrong" order
-// because they can be straight masked & ORed rather than
-// having to be shifted.
-static uint8_t t0[256], t1[256], t2[256], t3[256];
+struct v {
+    union {
+        struct {uint8_t u0, u1, u2, badbits;};
+        uint32_t u32;
+    };
+};
+static struct v t0[256], t1[256], t2[256], t3[256];
 
 // Bad bits
+// Can be used to determine exactly which input character was bad.
 #define T0BB (1 << 0)
-#define T1BB (1 << 2)
-#define T2BB (1 << 4)
-#define T3BB (1 << 6)
+#define T1BB (1 << 1)
+#define T2BB (1 << 2)
+#define T3BB (1 << 3)
 
 static void fill_badbits() {
-    memset(t0, T0BB, 256);
-    memset(t1, T1BB, 256);
-    memset(t2, T2BB, 256);
-    memset(t3, T3BB, 256);
+    memset(t0, T0BB, sizeof(t0));
+    memset(t1, T1BB, sizeof(t1));
+    memset(t2, T2BB, sizeof(t2));
+    memset(t3, T3BB, sizeof(t3));
 }
 
 __attribute__((const))
@@ -50,13 +44,15 @@ static unsigned char next(unsigned char c) {
 }
 
 __attribute__((const))
-static uint8_t splitshift_t1(uint8_t n) {
-    return n >> 4 | n << 4;
+static struct v splitshift_t1(uint8_t n) {
+    struct v v = {{{ n >> 4, n << 4, 0, 0 }}};
+    return v;
 }
 
 __attribute__((const))
-static uint8_t splitshift_t2(uint8_t n) {
-    return n >> 2 | n << 6;
+static struct v splitshift_t2(uint8_t n) {
+    struct v v = {{{ 0, n >> 2, n << 6, 0}}};
+    return v;
 }
 
 __attribute__((constructor))
@@ -66,10 +62,15 @@ static void setup_tables() {
     uint8_t n = 0;
     unsigned char c = 'A';
     for (n = 0; n < 64; ++n) {
-        t0[c] = n << 2;
+        struct v v0 = {{{0,0,0,0}}};
+        v0.u0 = n << 2;
+        t0[c] = v0;
+
         t1[c] = splitshift_t1(n);
         t2[c] = splitshift_t2(n);
-        t3[c] = n;
+
+        struct v v3 = {{{0,0,n,0}}};
+        t3[c] = v3;
         c = next(c);
     }
 
@@ -79,14 +80,18 @@ static void setup_tables() {
     // not allowed according to RFC 4648 (base64url spec) and there's
     // no clear documentation of which code represents which value.
     // So we only include base64 (above) & base64url codes.
-    t0['-'] = 62 << 2;
-    t0['_'] = 63 << 2;
+    struct v t0_62 = {{{ 62 << 2, 0, 0, 0}}};
+    t0['-'] = t0_62;
+    struct v t0_63 = {{{ 63 << 2, 0, 0, 0}}};
+    t0['_'] = t0_63;
     t1['-'] = splitshift_t1(62);
     t1['_'] = splitshift_t1(63);
     t2['-'] = splitshift_t2(62);
     t2['_'] = splitshift_t2(63);
-    t3['-'] = 62;
-    t3['_'] = 63;
+    t3['-'].u2 = 62;
+    t3['-'].badbits = 0;
+    t3['_'].u2 = 63;
+    t3['_'].badbits = 0;
 }
 
 // The number of bytes expected in the last block, based on the *unpadded*
@@ -130,14 +135,15 @@ size_t fb64_decoded_size(const char* input, size_t inlen) {
 }
 
 static int decode_block(const unsigned char in[4], uint8_t out[3]) {
-    out[0] =  t0[in[0]]         | (t1[in[1]] & 3);
-    out[1] = (t1[in[1]] & 0xf0) | (t2[in[2]] & 0x0f);
-    out[2] = (t2[in[2]] & 192)  |  t3[in[3]];
+    uint32_t result = t0[in[0]].u32 |
+                      t1[in[1]].u32 |
+                      t2[in[2]].u32 |
+                      t3[in[3]].u32;
+    memcpy(out, &result, 3);
 
-    return (t0[in[0]] & T0BB) |
-           (t1[in[1]] & T1BB) |
-           (t2[in[2]] & T2BB) |
-           (t3[in[3]] & T3BB);
+    struct v v = {.u32 = result};
+
+    return v.badbits;
 }
 
 // Returns nonzero on invalid input.
