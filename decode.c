@@ -5,20 +5,30 @@
 // Future: These tables can be hard-coded
 // rather than built at startup.
 
-// T0: 6 bits, unused bit, badbit
-//     6 bits are MSB of the first octet
-// T1: 4 bits, unused bit, badbit, 2 bits
-//     2 bits in LSB position are combined with T0 for first octet
-//     4 bits in MSB position are the 4 MSB of second octet
-// T2: 2 bits, unused bit, badbit, 4 bits
-//     2 bits are the MSB of the third octet
-//     4 bits are the LSB of the second octet
-// T3: unused bit, badbit, 6 bits
-//     6 bits are the LSB of the third octet
-// IOW T1 & T2 contain bits in the "wrong" order
-// because they can be straight masked & ORed rather than
-// having to be shifted.
-static uint8_t t0[256], t1[256], t2[256], t3[256];
+// Tables have bits set in the following way:
+// Each bit is marked as one of:
+//   x: badbit - indicates an invalid input character
+// 012: bit belongs to this output byte
+//   _: unused bit
+//
+// T0:     000000_x: high six bits of octet 0
+// T1: lb: _____x00: low two bits of octet 0
+//     hb: 1111_x__: high four bits of octet 1
+// T2: lb: ___x1111: low four of octet 1
+//     hb: 22_x____: high two bits of octet 2
+// T3:     _x222222: low six bits of octet 3
+//
+// Separating T1 & T2 into separate tables avoids the need to mask out each
+// set of bits before ORing them into the output octet, at the cost of an
+// extra 512 bytes of memory.
+//
+// If you'd rather save the 512 bytes of memory and pay 4 operations per round
+// in decode_block then find the old version of this code at
+// https://github.com/tedjp/fb64/tree/2bf299b03549062a1b5cdc3c93ac74446fea6432
+// — it combined the hb & lb octets into a single octet.
+
+static uint8_t t0[256], t3[256];
+static struct oo { uint8_t lb, hb; } t1[256], t2[256];
 
 // Bad bits
 #define T0BB (1 << 0)
@@ -27,10 +37,10 @@ static uint8_t t0[256], t1[256], t2[256], t3[256];
 #define T3BB (1 << 6)
 
 static void fill_badbits() {
-    memset(t0, T0BB, 256);
-    memset(t1, T1BB, 256);
-    memset(t2, T2BB, 256);
-    memset(t3, T3BB, 256);
+    memset(t0, T0BB, sizeof(t0));
+    memset(t1, T1BB, sizeof(t1));
+    memset(t2, T2BB, sizeof(t2));
+    memset(t3, T3BB, sizeof(t3));
 }
 
 __attribute__((const))
@@ -50,13 +60,19 @@ static unsigned char next(unsigned char c) {
 }
 
 __attribute__((const))
-static uint8_t splitshift_t1(uint8_t n) {
-    return n >> 4 | n << 4;
+static struct oo splitshift_t1(uint8_t n) {
+    struct oo oo;
+    oo.lb = n >> 4;
+    oo.hb = n << 4;
+    return oo;
 }
 
 __attribute__((const))
-static uint8_t splitshift_t2(uint8_t n) {
-    return n >> 2 | n << 6;
+static struct oo splitshift_t2(uint8_t n) {
+    struct oo oo;
+    oo.lb = n >> 2;
+    oo.hb = n << 6;
+    return oo;
 }
 
 __attribute__((constructor))
@@ -130,13 +146,15 @@ size_t fb64_decoded_size(const char* input, size_t inlen) {
 }
 
 static int decode_block(const unsigned char in[4], uint8_t out[3]) {
-    out[0] =  t0[in[0]]         | (t1[in[1]] & 3);
-    out[1] = (t1[in[1]] & 0xf0) | (t2[in[2]] & 0x0f);
-    out[2] = (t2[in[2]] & 192)  |  t3[in[3]];
+    out[0] = t0[in[0]]    | t1[in[1]].lb;
+    out[1] = t1[in[1]].hb | t2[in[2]].lb;
+    out[2] = t2[in[2]].hb | t3[in[3]];
 
+    // badbit is set on both hb & lb in t1 & t2, but we only need to inspect
+    // either hb or lb in each table.
     return (t0[in[0]] & T0BB) |
-           (t1[in[1]] & T1BB) |
-           (t2[in[2]] & T2BB) |
+           (t1[in[1]].hb & T1BB) |
+           (t2[in[2]].hb & T2BB) |
            (t3[in[3]] & T3BB);
 }
 
