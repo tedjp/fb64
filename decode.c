@@ -7,7 +7,9 @@
 
 struct v {
     union {
-        struct {uint8_t u0, u1, u2, badbits;};
+        // putting badbits first saves a shift when expanding the
+        // badbits field to an int on little endian.
+        struct {uint8_t badbits, u0, u1, u2;};
         uint32_t u32;
     };
 };
@@ -45,13 +47,13 @@ static unsigned char next(unsigned char c) {
 
 __attribute__((const))
 static struct v splitshift_t1(uint8_t n) {
-    struct v v = {{{ n >> 4, n << 4, 0, 0 }}};
+    struct v v = {{{ 0, n >> 4, n << 4, 0 }}};
     return v;
 }
 
 __attribute__((const))
 static struct v splitshift_t2(uint8_t n) {
-    struct v v = {{{ 0, n >> 2, n << 6, 0}}};
+    struct v v = {{{ 0, 0, n >> 2, n << 6}}};
     return v;
 }
 
@@ -69,7 +71,7 @@ static void setup_tables() {
         t1[c] = splitshift_t1(n);
         t2[c] = splitshift_t2(n);
 
-        struct v v3 = {{{0,0,n,0}}};
+        struct v v3 = {{{0,0,0,n}}};
         t3[c] = v3;
         c = next(c);
     }
@@ -80,9 +82,9 @@ static void setup_tables() {
     // not allowed according to RFC 4648 (base64url spec) and there's
     // no clear documentation of which code represents which value.
     // So we only include base64 (above) & base64url codes.
-    struct v t0_62 = {{{ 62 << 2, 0, 0, 0}}};
+    struct v t0_62 = {{{ 0, 62 << 2, 0, 0}}};
     t0['-'] = t0_62;
-    struct v t0_63 = {{{ 63 << 2, 0, 0, 0}}};
+    struct v t0_63 = {{{ 0, 63 << 2, 0, 0}}};
     t0['_'] = t0_63;
     t1['-'] = splitshift_t1(62);
     t1['_'] = splitshift_t1(63);
@@ -139,9 +141,9 @@ static int decode_block(const unsigned char in[4], uint8_t out[3]) {
                       t1[in[1]].u32 |
                       t2[in[2]].u32 |
                       t3[in[3]].u32;
-    memcpy(out, &result, 3);
 
     struct v v = {.u32 = result};
+    memcpy(out, &v.u0, 3);
 
     return v.badbits;
 }
