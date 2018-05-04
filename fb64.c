@@ -57,13 +57,12 @@ static int encode() {
             }
         }
 
-        // shortcut back to read()
-        if (len == 0)
-            continue;
-
+        // len might be zero
         fb64_encode(inbuf, len, outbuf);
 
-        // This is possibly zero
+        if (keep > 0 && len > 0)
+            memcpy(inbuf, inbuf + len, keep);
+
         size_t to_write = fb64_encoded_size(len);
 
         // output
