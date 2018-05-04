@@ -40,11 +40,11 @@ static void encode(const uint8_t *buf, size_t len, char *out, const char table[6
     }
 
     if (len) {
-        uint8_t local[3] = {0};
+        uint8_t local[3] = {0,0,0};
         char local_out[4];
         memcpy(local, buf, len);
 
-        enc_block(table, buf, local_out);
+        enc_block(table, local, local_out);
 
         switch (len) {
         case 2:
