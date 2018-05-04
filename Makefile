@@ -4,7 +4,7 @@ COMPILE_OBJ = gcc -Wall -shared -O3 -c
 
 OBJS = encode.o decode.o
 
-all: $(OBJS)
+all: fb64
 
 %.o: %.c
 	$(COMPILE_OBJ) $<
@@ -26,4 +26,7 @@ runbench: bench
 	./bench
 
 clean:
-	rm -f *.o test example
+	rm -f *.o test example fb64
+
+fb64: fb64.c $(OBJS)
+	gcc -Wall -O3 -o $@ $^
