@@ -12,12 +12,16 @@ all: fb64 $(STATIC_LIB)
 	$(COMPILE_OBJ) $<
 
 install:
+	mkdir -p -- $(DESTDIR)/usr/local/bin
+	cp -- fb64 $(DESTDIR)/usr/local/bin
 	mkdir -p -- $(DESTDIR)/usr/local/lib
 	cp -- $(STATIC_LIB) $(DESTDIR)/usr/local/lib
 	mkdir -p -- $(DESTDIR)/usr/local/include
 	cp -- fb64.h $(DESTDIR)/usr/local/include
 
 uninstall:
+	rm -- $(DESTDIR)/usr/local/bin/fb64
+	rmdir --ignore-fail-on-non-empty -- $(DESTDIR)/usr/local/bin
 	rm -- $(DESTDIR)/usr/local/lib/$(STATIC_LIB)
 	rmdir --ignore-fail-on-non-empty -- $(DESTDIR)/usr/local/lib
 	rm -- $(DESTDIR)/usr/local/include/fb64.h
