@@ -12,6 +12,7 @@ static void usage(const char *argv0, FILE *dest) {
 }
 
 static int decode() {
+    fprintf(stderr, "Command-line decode not implemented yet (sorry!)\n");
     return 1;
 }
 
