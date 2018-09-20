@@ -4,7 +4,7 @@
 
 #include "fb64.h"
 
-const struct {
+static const struct {
     // Decoded value has a spurious NUL-terminator for convenience
     const char *encoded, *decoded;
     bool error:1;
@@ -36,7 +36,7 @@ const struct {
     { "Zm9vYmFy", "foobar" },
 };
 
-const struct {
+static const struct {
     const char *input;
     size_t input_len;
     const char *output;
