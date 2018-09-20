@@ -1,13 +1,30 @@
-.PHONY: all check clean runbench
+.PHONY: all check clean runbench install uninstall
+
+STATIC_LIB = libfb64.a
 
 COMPILE_OBJ = gcc -Wall -shared -O3 -c
 
 OBJS = encode.o decode.o
 
-all: fb64
+all: fb64 $(STATIC_LIB)
 
 %.o: %.c
 	$(COMPILE_OBJ) $<
+
+install:
+	mkdir -p -- $(DESTDIR)/usr/local/lib
+	cp -- $(STATIC_LIB) $(DESTDIR)/usr/local/lib
+	mkdir -p -- $(DESTDIR)/usr/local/include
+	cp -- fb64.h $(DESTDIR)/usr/local/include
+
+uninstall:
+	rm -- $(DESTDIR)/usr/local/lib/$(STATIC_LIB)
+	rmdir --ignore-fail-on-non-empty -- $(DESTDIR)/usr/local/lib
+	rm -- $(DESTDIR)/usr/local/include/fb64.h
+	rmdir --ignore-fail-on-non-empty -- $(DESTDIR)/usr/local/include
+
+$(STATIC_LIB): $(OBJS)
+	ar rcs $@ $^
 
 test: test.c $(OBJS)
 	gcc -Wall -O3 -o $@ $^
@@ -26,7 +43,7 @@ runbench: bench
 	./bench
 
 clean:
-	rm -f *.o test example fb64
+	rm -f *.o test example fb64 $(STATIC_LIB)
 
-fb64: fb64.c $(OBJS)
+fb64: fb64.c $(STATIC_LIB)
 	gcc -Wall -O3 -o $@ $^

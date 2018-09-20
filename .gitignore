@@ -3,3 +3,4 @@ example
 /fb64
 test
 *.o
+*.a
