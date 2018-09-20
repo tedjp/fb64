@@ -2,7 +2,8 @@
 
 STATIC_LIB = libfb64.a
 
-COMPILE_OBJ = gcc -Wall -shared -O3 -fvisibility=hidden -fPIC -c
+COMPILE = gcc -std=gnu99 -Wall
+COMPILE_OBJ = $(COMPILE) -shared -O3 -fvisibility=hidden -fPIC -c
 
 OBJS = encode.o decode.o
 
@@ -31,10 +32,10 @@ $(STATIC_LIB): $(OBJS)
 	ar rcs $@ $^
 
 test: test.c $(OBJS)
-	gcc -Wall -O3 -o $@ $^
+	$(COMPILE) -O3 -o $@ $^
 
 example: example.c $(OBJS)
-	gcc -Wall -o $@ $^
+	$(COMPILE) -o $@ $^
 
 check: example test
 	./example > /dev/null
@@ -50,4 +51,4 @@ clean:
 	rm -f *.o test example fb64 $(STATIC_LIB)
 
 fb64: fb64.c $(STATIC_LIB)
-	gcc -Wall -O3 -o $@ $^
+	$(COMPILE) -O3 -o $@ $^
