@@ -20,11 +20,11 @@ install:
 	cp -- fb64.h $(DESTDIR)/usr/local/include
 
 uninstall:
-	rm -- $(DESTDIR)/usr/local/bin/fb64
+	rm -f -- $(DESTDIR)/usr/local/bin/fb64
 	rmdir --ignore-fail-on-non-empty -- $(DESTDIR)/usr/local/bin
-	rm -- $(DESTDIR)/usr/local/lib/$(STATIC_LIB)
+	rm -f -- $(DESTDIR)/usr/local/lib/$(STATIC_LIB)
 	rmdir --ignore-fail-on-non-empty -- $(DESTDIR)/usr/local/lib
-	rm -- $(DESTDIR)/usr/local/include/fb64.h
+	rm -f -- $(DESTDIR)/usr/local/include/fb64.h
 	rmdir --ignore-fail-on-non-empty -- $(DESTDIR)/usr/local/include
 
 $(STATIC_LIB): $(OBJS)
