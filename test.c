@@ -24,6 +24,7 @@ const struct {
     { "++++", "\xfb\xef\xbe" },
     { "----", "\xfb\xef\xbe" },
     { "____", "\xff\xff\xff" },
+    { "SGVsbG8sIHdvcmxkIQ==", "Hello, world!" },
     { "A=A=", "", true }, // decode error
     { "A", "", true  }, // decode error
     // Unpadded inputs
