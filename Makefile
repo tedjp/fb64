@@ -2,7 +2,7 @@
 
 STATIC_LIB = libfb64.a
 
-COMPILE_OBJ = gcc -Wall -shared -O3 -c
+COMPILE_OBJ = gcc -Wall -shared -O3 -fvisibility=hidden -fPIC -c
 
 OBJS = encode.o decode.o
 

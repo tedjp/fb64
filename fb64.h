@@ -21,11 +21,15 @@ extern "C" {
 #define FB64_ENCODE_MAX (SIZE_MAX / 4)
 #define FB64_DECODE_MAX (SIZE_MAX / 3)
 
+#define FB64_EXPORT __attribute__((visibility("default")))
+
 // determine length for Base64 input with padding (possible trailing '=')
+FB64_EXPORT
 __attribute__((__pure__))
 size_t fb64_decoded_size(const char* input, size_t inlen);
 
 // determine length for Base64 input without padding (no possible trailing '=')
+FB64_EXPORT
 __attribute__((__const__))
 size_t fb64_decoded_size_nopad(size_t inlen);
 
@@ -35,6 +39,7 @@ size_t fb64_decoded_size_nopad(size_t inlen);
 // how much output buffer to reserve beforehand.
 // Input must not contain newlines. Newlines are considered an error.
 // Output must not overlap with input (ie. cannot decode in-place).
+FB64_EXPORT
 int fb64_decode(const char *in, size_t len, uint8_t *out);
 
 // Encoding:
@@ -46,27 +51,33 @@ int fb64_decode(const char *in, size_t len, uint8_t *out);
 // intend to use the output as a C-string.
 
 // Size of output buffer needed to encode input with possible padding
+FB64_EXPORT
 __attribute__((__const__))
 size_t fb64_encoded_size(size_t input_len);
 
 // Size of output buffer needed to encode input without padding.
+FB64_EXPORT
 __attribute__((__const__))
 size_t fb64_encoded_size_nopad(size_t input_len);
 
 // Encode bytes to Base64
 // Using the standard base64 alphabet (+ & /) with padding.
+FB64_EXPORT
 void fb64_encode(const uint8_t *buf, size_t len, char *out);
 
 // Encode bytes to Base64
 // Using the standard base64 alphabet (+ & /) without padding.
+FB64_EXPORT
 void fb64_encode_nopad(const uint8_t *buf, size_t len, char *out);
 
 // Encode bytes to Base64
 // Using the base64url alphabet (- & _) with padding.
+FB64_EXPORT
 void fb64_encode_base64url(const uint8_t *buf, size_t len, char *out);
 
 // Encode bytes to Base64
 // Using the base64url alphabet (- & _) without padding.
+FB64_EXPORT
 void fb64_encode_base64url_nopad(const uint8_t *buf, size_t len, char *out);
 
 #ifdef __cplusplus
