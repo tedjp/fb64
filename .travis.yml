@@ -1,2 +1,3 @@
 language: cpp
 script: make -j && make check && make install DESTDIR=/tmp/destdir && make uninstall DESTDIR=/tmp/destdir
+sudo: false
