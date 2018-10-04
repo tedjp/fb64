@@ -8,6 +8,31 @@ Features
 - Small memory footprint.
 - *Fast.*
 
+## Execute
+
+When built or installed, fb64 can be used for command-line encoding & decoding:
+
+    $ echo asdf | fb64
+    YXNkZgo=
+
+    $ echo YXNkZgo= | fb64 -d
+    asdf
+
+`fb64` may be preferable over GNU coreutils' `base64` if you want to decode
+unpadded or base64url input, both of which require special handling
+to decode with coreutils' `base64`.
+
+    $ echo ßß | fb64
+    w5/Dnwo=
+
+    $ echo W5_Dnwo | fb64 -d
+    ßß
+
+coreutils' `base64` is less accommodating:
+
+    $ echo w5_Dnwo | base64 -d
+    �base64: invalid input
+
 ## Examples
 
 ### Decode
