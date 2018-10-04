@@ -31,22 +31,22 @@ Features
     $ echo asdf | fb64
     YXNkZgo=
 
-    $ echo YXNkZgo= | fb64 -d
+    $ echo YXNkZgo= | fb64 --decode
     asdf
 
-`fb64` may be preferable over GNU coreutils' `base64` if you want to decode
-unpadded or base64url input, both of which require special handling
-to decode with coreutils' `base64`.
+`fb64` may be preferable over GNU coreutils' `base64` if you're dealing with
+unpadded or base64url-encoded content, both of which require extra work to
+handle with coreutils' `base64`.
 
-    $ echo ßß | fb64
-    w5/Dnwo=
+    $ echo ßß | fb64 --base64url --nopad
+    w5_Dnwo
 
-    $ echo w5_Dnwo | fb64 -d
+    $ echo w5_Dnwo | fb64 --decode
     ßß
 
 coreutils' `base64` is less accommodating:
 
-    $ echo w5_Dnwo | base64 -d
+    $ echo w5_Dnwo | base64 --decode
     �base64: invalid input
 
 ## Library
