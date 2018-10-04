@@ -16,6 +16,14 @@ Features
 
     $ make check
 
+## Install
+
+    $ sudo make install
+
+## Uninstall (optional)
+
+    $ sudo make uninstall
+
 ## Execute
 
 `fb64` can be used for command-line encoding & decoding:
@@ -41,9 +49,9 @@ coreutils' `base64` is less accommodating:
     $ echo w5_Dnwo | base64 -d
     �base64: invalid input
 
-## API
+## Library
 
-### Decode
+### Decode API
 
 ```c
 const char input[] = "SGVsbG8sIHdvcmxkIQ==";
@@ -56,7 +64,9 @@ fb64_decode(input, strlen(input), output);
 printf("%.*s\n", (int)decoded_size, output);
 ```
 
-### Encode
+See [example.c](example.c) for a full example.
+
+### Encode API
 
 ```c
 const uint8_t input[] = {'f', 'b', '6', '4', ' ', 'i', 's', ' ', 'f', 'a', 's', 't', '!'};
@@ -72,6 +82,15 @@ output[output_size] = '\0';
 
 printf("%s\n", output);
 ```
+
+### Library usage
+
+The header & library are installed into `/usr/local`, so just use them the
+normal way:
+
+    #include <fb64.h>
+
+    gcc myprogram.c /usr/local/lib/libfb64.a
 
 ## Benchmarks
 
