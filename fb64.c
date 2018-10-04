@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <errno.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -12,8 +13,44 @@ static void usage(const char *argv0, FILE *dest) {
 }
 
 static int decode() {
-    fprintf(stderr, "Command-line decode not implemented yet (sorry!)\n");
-    return 1;
+    char input[4096];
+    uint8_t decoded[4096 * 3 / 4]; // 3072
+
+    ssize_t len;
+
+    while ((len = read(STDIN_FILENO, input, sizeof(input))) > 0) {
+        if (input[len - 1] == '\n')
+            --len;
+        if (input[len - 1] == '\r')
+            --len;
+
+        size_t decoded_len = fb64_decoded_size(input, (size_t) len);
+        assert(decoded_len <= sizeof(decoded));
+
+        int err = fb64_decode(input, (size_t) len, decoded);
+        if (err) {
+            fprintf(stderr, "Decode error, ensure input has no whitespace\n");
+            return 1;
+        }
+
+        len = write(STDOUT_FILENO, decoded, decoded_len);
+        if (len == -1) {
+            perror("Write error");
+            return 1;
+        }
+
+        if (len != decoded_len) {
+            fprintf(stderr, "Short write\n");
+            return 1;
+        }
+    }
+
+    if (len < 0) {
+        perror("Read error");
+        return 1;
+    }
+
+    return 0;
 }
 
 static int encode() {
