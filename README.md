@@ -33,7 +33,7 @@ to decode with coreutils' `base64`.
     $ echo ßß | fb64
     w5/Dnwo=
 
-    $ echo W5_Dnwo | fb64 -d
+    $ echo w5_Dnwo | fb64 -d
     ßß
 
 coreutils' `base64` is less accommodating:
