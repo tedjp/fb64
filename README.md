@@ -1,6 +1,6 @@
 # fb64
 
-Fast Base64 Encoder & Decoder
+Fast Base64 Encoder & Decoder library
 
 Features
 - Supports both [base64 & base64url encodings](https://tools.ietf.org/html/rfc4648).
@@ -8,9 +8,17 @@ Features
 - Small memory footprint.
 - *Fast.*
 
+## Build
+
+    $ make
+
+## Test
+
+    $ make check
+
 ## Execute
 
-When built or installed, fb64 can be used for command-line encoding & decoding:
+`fb64` can be used for command-line encoding & decoding:
 
     $ echo asdf | fb64
     YXNkZgo=
@@ -33,7 +41,7 @@ coreutils' `base64` is less accommodating:
     $ echo w5_Dnwo | base64 -d
     �base64: invalid input
 
-## Examples
+## API
 
 ### Decode
 
