@@ -20,19 +20,21 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-.PHONY: all check clean runbench install uninstall
+.PHONY: all check clean coverage runbench install uninstall
 
 STATIC_LIB = libfb64.a
 
-COMPILE = gcc -std=gnu99 -Wall -g
-COMPILE_OBJ = $(COMPILE) -shared -O3 -fvisibility=hidden -fPIC -c
+CC = gcc
+CFLAGS = -std=gnu11 -pipe -fPIC -Wall -g -O3
+COMPILE_OBJ = $(CC) $(CFLAGS) -shared -fvisibility=hidden -c
+COMPILE = $(CC) $(CFLAGS)
 
 OBJS = encode.o decode.o
 
 all: fb64 $(STATIC_LIB)
 
 %.o: %.c
-	$(COMPILE_OBJ) $<
+	$(COMPILE_OBJ) $(COVERAGE_FLAGS) $<
 
 install:
 	mkdir -p -- $(DESTDIR)/usr/local/bin
@@ -54,10 +56,10 @@ $(STATIC_LIB): $(OBJS)
 	ar rcs $@ $^
 
 test: test.c $(OBJS)
-	$(COMPILE) -O3 -o $@ $^
+	$(COMPILE) $(COVERAGE_FLAGS) -o $@ $^
 
 example: example.c $(OBJS)
-	$(COMPILE) -o $@ $^
+	$(COMPILE) $(COVERAGE_FLAGS) -o $@ $^
 
 check: example test
 	./example > /dev/null
@@ -72,5 +74,10 @@ runbench: bench
 clean:
 	rm -f *.o test example fb64 $(STATIC_LIB)
 
+coverage:
+	$(MAKE) clean
+	$(MAKE) COVERAGE_FLAGS="--coverage -O0"
+	$(MAKE) check COVERAGE_FLAGS="--coverage -O0"
+
 fb64: fb64.c $(STATIC_LIB)
-	$(COMPILE) -O3 -o $@ $^
+	$(COMPILE) $(COVERAGE_FLAGS) -o $@ $^
