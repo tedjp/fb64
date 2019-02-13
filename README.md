@@ -54,6 +54,10 @@ coreutils' `base64` is less accommodating:
 ### Decode API
 
 ```c
+int fb64_decode(const char* input, size_t len, char* output);
+```
+
+```c
 const char input[] = "SGVsbG8sIHdvcmxkIQ==";
 
 size_t decoded_size = fb64_decoded_size(input, strlen(input));
@@ -67,6 +71,10 @@ printf("%.*s\n", (int)decoded_size, output);
 See [example.c](example.c) for a full example.
 
 ### Encode API
+
+```c
+void fb64_encode(const uint8_t* buf, size_t len, char* out);
+```
 
 ```c
 const uint8_t input[] = {'f', 'b', '6', '4', ' ', 'i', 's', ' ', 'f', 'a', 's', 't', '!'};
