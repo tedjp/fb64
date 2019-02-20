@@ -139,4 +139,4 @@ static void modp_Encode(benchmark::State& state) {
 }
 BENCHMARK(modp_Encode);
 
-BENCHMARK_MAIN()
+BENCHMARK_MAIN();
