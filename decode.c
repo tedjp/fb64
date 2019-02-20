@@ -179,7 +179,6 @@ int fb64_decode(const char *in, size_t len, uint8_t *out) {
 
     while (len > 4) {
         bad |= decode_block((const unsigned char*)in, out);
-        // XXX: Avoid using len here and just use `in`?
         len -= 4;
         in += 4;
         out += 3;
