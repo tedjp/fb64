@@ -155,12 +155,16 @@ should be split on 4-character boundaries.
 ## Comparison with modp\_b64
 
 [modp\_b64](https://github.com/chromium/chromium/tree/master/third_party/modp_b64)
-is faster. It also uses more memory.
+is faster, but it uses significantly more memory.
 
 |Library  |Decode memory|Decode speed|Encode memory|Encode speed|Total static footprint|
 |---------|------------:|-----------:|------------:|-----------:|---------------------:|
-|fb64     |        1 kiB|          1×|      128 kiB|          1×|             1.125 kiB|
-|modp\_b64|        4 kiB|       2.15×|      768 kiB|        1.1×|             4.75  kiB|
+|fb64     |        1 kiB|          1×|       128 B¹|          1×|             1.125 kiB|
+|modp\_b64|        4 kiB|       2.15×|       768 B |        1.1×|             4.75  kiB|
+
+¹ fb64 encode's working memory set is 128 bytes if you produce both
+base64 & base64url encodings. If you only produce one encoding, the static
+working set is 64 bytes.
 
 ### Tradeoffs
 
@@ -173,7 +177,7 @@ fb64 benefits:
 - Output buffer size is exact
   (modp\_b64 may over-allocate by a few bytes).
 - Smaller memory footprint. All tables fit within one 4 kiB page and take up
-  less L1 cache; useful if you only encode/decode occasionally.
+  less CPU cache; useful if you only encode/decode occasionally.
 
 modp\_b64 benefits:
 - Faster, especially at decoding.
