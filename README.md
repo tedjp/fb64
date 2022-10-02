@@ -8,23 +8,38 @@ Features
 - Small memory footprint.
 - *Fast.*
 
-## Build
+# Build & use instructions
 
-    $ make
+## CMake
 
-## Test
+A CMake build is available to build the library & command-line program.
 
-    $ make check
+    mkdir build
+    cd build
+    cmake ..
+    make
 
-## Install
+## Makefile
 
-    $ sudo make install
+The original hand-written Makefile build is also available.
 
-## Uninstall (optional)
+### Build
 
-    $ sudo make uninstall
+    make
 
-## Execute
+### Test
+
+    make check
+
+### Install
+
+    sudo make install
+
+### Uninstall (optional)
+
+    sudo make uninstall
+
+# Command-line interface
 
 `fb64` can be used for command-line encoding & decoding:
 
@@ -49,9 +64,11 @@ coreutils' `base64` is less accommodating:
     $ echo w5_Dnwo | base64 --decode
     �base64: invalid input
 
-## Library
+# Library
 
-### Decode API
+A library is available for integration into other products.
+
+## Decode API
 
 ```c
 int fb64_decode(const char* input, size_t len, char* output);
@@ -70,7 +87,7 @@ printf("%.*s\n", (int)decoded_size, output);
 
 See [example.c](example.c) for a full example.
 
-### Encode API
+## Encode API
 
 ```c
 void fb64_encode(const uint8_t* buf, size_t len, char* out);
@@ -91,7 +108,7 @@ output[output_size] = '\0';
 printf("%s\n", output);
 ```
 
-### Library usage
+## Library usage
 
 The header & library are installed into `/usr/local`, so just use them the
 normal way:
@@ -100,7 +117,7 @@ normal way:
 
     gcc myprogram.c /usr/local/lib/libfb64.a
 
-## Benchmarks
+# Benchmarks
 
 Both encode & decode benchmarks are for 1 kiB of random data.
 
@@ -121,14 +138,14 @@ Both encode & decode benchmarks are for 1 kiB of random data.
 The "fb64 string" variant wraps the input & output in a `std::string`
 for a more direct comparison with the Proxygen/OpenSSL API.
 
-## Advanced usage
+# Advanced usage
 
 fb64 can be used to encode or decode streams or large amounts of data by calling
 the encode/decode functions on blocks of input aligned on encode/decode quantum
 boundaries. Encode input should be split on 3-octet boundaries; decode input
 should be split on 4-character boundaries.
 
-## Limitations
+# Limitations
 
 1. `fb64_decode()` does not accept newlines in its input. It might still be faster
    than other decoders if the input is preprocessed to delete newlines.
@@ -144,7 +161,7 @@ should be split on 4-character boundaries.
    it conforms to your requirements. See [RFC 4648 section 12 "Security
    Considerations"](https://tools.ietf.org/html/rfc4648#section-12).
 
-## Bugs
+# Bugs
 
 1. The buffer length functions `fb64_decoded_size()` &
    `fb64_decoded_size_nopad()` return incorrect buffer lengths for inputs longer
@@ -152,7 +169,7 @@ should be split on 4-character boundaries.
    The preprocessor macros `FB64_DECODE_MAX` & `FB64_ENCODE_MAX` can be used to
    ensure that these limits are not exceeded.
 
-## Comparison with modp\_b64
+# Comparison with modp\_b64
 
 [modp\_b64](https://github.com/chromium/chromium/tree/master/third_party/modp_b64)
 is faster, but it uses significantly more memory.
@@ -166,7 +183,7 @@ is faster, but it uses significantly more memory.
 base64 & base64url encodings. If you only produce one encoding, the static
 working set is 64 bytes.
 
-### Tradeoffs
+## Tradeoffs
 
 fb64 benefits:
 - Supports base64 & base64url code sets simultaneously
@@ -182,6 +199,6 @@ fb64 benefits:
 modp\_b64 benefits:
 - Faster, especially at decoding.
 
-## License
+# License
 
 [MIT License](LICENSE)
