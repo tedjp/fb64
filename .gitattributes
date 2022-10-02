@@ -1,5 +1,8 @@
-* text=auto
-*.c text
-*.h text
-*.md text
-*.txt text
+*       text=auto
+*.c     text diff=cpp
+*.cpp   text diff=cpp
+*.h     text diff=cpp
+*.md    text diff=markdown
+*.txt   text
+LICENSE text
+Makefile    text eol=lf
