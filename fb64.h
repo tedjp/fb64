@@ -45,7 +45,11 @@ extern "C" {
 #define FB64_ENCODE_MAX (SIZE_MAX / 4)
 #define FB64_DECODE_MAX (SIZE_MAX / 3)
 
-#define FB64_EXPORT __attribute__((visibility("default")))
+#if defined(__GNUC__)
+# define FB64_EXPORT __attribute__((visibility("default")))
+#elif defined(_MSC_VER)
+# define FB64_EXPORT __declspec(dllexport)
+#endif
 
 // determine length for Base64 input with padding (possible trailing '=')
 FB64_EXPORT
